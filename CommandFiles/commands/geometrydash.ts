@@ -8,7 +8,7 @@ const gdcmd = defineCommand({
     otherNames: ["dash", "geometrydash", "gdbrowser"],
     category: "Utilities",
     description: "Anything related to GDBrowser.",
-    version: "1.1.0",
+    version: "1.1.1",
     icon: "🛠️",
     author: "@lianecagara",
   },
@@ -42,14 +42,12 @@ const gdoptions = new SpectralCMDHome({ isHypen: false }, [
         }
         await output.reaction("⏳");
         const levels = await GDBrowserAPI.search(name, {
-          page,
-          count: 5,
+          page: page - 1,
         });
-        const top5 = levels.slice(0, 5);
         const getLikeEmo = (likes: number) => (likes < 0 ? `👎` : `👍`);
         const mapped = [
           `🔎 **5 Results** (Page **${page}**)`,
-          ...top5.map(
+          ...levels.map(
             (level, ind) =>
               `**${ind + 1}**. **${level.name}** (#${level.id})\n${
                 UNISpectra.arrow
@@ -75,7 +73,7 @@ const gdoptions = new SpectralCMDHome({ isHypen: false }, [
           if (isNaN(targnum)) {
             return output2.reply("⚠️ Invalid number.");
           }
-          const targ = top5.find((_, j) => j + 1 === targnum);
+          const targ = levels.find((_, j) => j + 1 === targnum);
           if (!targ) {
             return output2.reply(
               `⚠️ Reply with a **number** between **1** to **5**`
@@ -131,7 +129,7 @@ const gdoptions = new SpectralCMDHome({ isHypen: false }, [
         }\n(To view comments, reply with a page **number** like 1)`;
 
         const res = await output.reply(mapped);
-        res.atReply(async (repCtx) => {
+        const onRep = async (repCtx: CommandContext) => {
           const { input, output } = repCtx;
           output.setStyle(gdcmd.style);
           const page = parseInt(input.text[0]);
@@ -140,25 +138,29 @@ const gdoptions = new SpectralCMDHome({ isHypen: false }, [
           }
           try {
             const comments = await GDBrowserAPI.comments(level.id, {
-              page,
-              count: 8,
+              page: page - 1,
             });
             if (!comments.length) {
               throw 69;
             }
-            const commentsStr = comments
-              .map(
+            const commentsStr = [
+              `💬 **${level.name}** (Page **${page}**)\n${UNISpectra.arrow} By ${level.author}`,
+              ...comments.map(
                 (c) =>
                   `👤 **${c.username}**${
                     c.percent ? `  %${c.percent}` : ""
-                  } ${"🪙".repeat(c.coins || 0)}\n${c.content}`
-              )
-              .join(`\n${UNISpectra.standardLine}\n`);
-            return output.reply(commentsStr);
+                  } ${"🪙".repeat(c.coins || 0)}\n${
+                    c.content
+                  }\n(${c.date.toFonted("fancy_italic")})`
+              ),
+            ].join(`\n${UNISpectra.standardLine}\n`);
+            const ress = await output.reply(commentsStr);
+            ress.atReply(onRep);
           } catch (error) {
             return output.reply("No Results.");
           }
-        });
+        };
+        res.atReply(onRep);
         await output.reaction("✅");
       } catch (error) {
         return output.reply("No Results.");
