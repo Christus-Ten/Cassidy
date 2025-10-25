@@ -216,6 +216,28 @@ const gdoptions = new SpectralCMDHome({ isHypen: false }, [
       }
     },
   },
+  {
+    key: "event",
+    description: "View the event level.",
+    async handler({ output, input }, { execOther }) {
+      try {
+        const id = await GDBrowserAPI.getLevelIDFromPage(
+          GDBrowserAPI.mainUrl + "/event"
+        );
+        if (id === null) throw 69;
+        return execOther({
+          key: "view",
+          spectralArgsNew: [id],
+          io: {
+            input,
+            output,
+          },
+        });
+      } catch (error) {
+        return output.reply("No Results.");
+      }
+    },
+  },
 ]);
 
 export default gdcmd;
