@@ -96,7 +96,11 @@ declare global {
     /**
      * Handles output operations and responses.
      */
-    output: OutputProps;
+    output: OutputClass;
+    /**
+     * (Outdated) Handles output operations and responses.
+     */
+    outputLegacy: OutputProps;
     /**
      * Contains arguments passed to the command.
      */
@@ -1181,6 +1185,7 @@ import { FormatArgs } from "@cass-modules/format-with";
 import { FontSystem } from "cassidy-styler";
 import { createThreads, createUsers } from "@cass-plugins/botpack-utils";
 import * as _CanvCass from "@cass-modules/CassieahExtras";
+import OutputClass from "@cass-modules/OutputClass";
 
 // import { defineOutputJSX, defineUserStatsJSX, VNode } from "@cass/define";
 declare global {

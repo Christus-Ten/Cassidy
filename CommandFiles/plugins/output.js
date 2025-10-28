@@ -15,6 +15,7 @@ import { base64ToStream, streamToBase64 } from "../../webSystem";
 import InputClass from "@cass-modules/InputClass";
 import { inspect } from "util";
 import { BriefcaseAPI } from "@cass-modules/BriefcaseAPI";
+import OutputClass from "@cass-modules/OutputClass";
 
 export const meta = {
   name: "output",
@@ -818,8 +819,9 @@ export async function use(obj) {
     });*/
     outputProps.react = outputProps.reaction;
 
+    obj.output = new OutputClass(obj);
     // @ts-ignore
-    obj.output = outputProps;
+    obj.outputLegacy = outputProps;
     obj.outputOld = output;
     obj.output.formatError = formatError;
     class AutoEdit {

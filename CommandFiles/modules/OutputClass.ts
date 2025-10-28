@@ -18,6 +18,9 @@ import { inspect } from "util";
 export class OutputClass implements OutputProps {
   #ctx: CommandContext;
 
+  /**
+   * @deprecated
+   */
   Styled: OutputProps["Styled"];
 
   constructor(ctx: CommandContext) {

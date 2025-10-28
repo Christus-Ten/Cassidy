@@ -345,7 +345,7 @@ export function listItem(
 ) {
   return `${item.icon}${
     typeof count === "number" && count > 1 ? ` **x${count}**` : ""
-  } ${bold ? `**${item.name}**` : item.name}${showID ? `  (${item.key})` : ""}`;
+  } ${bold ? `**${item.name}**` : item.name}${showID ? ` (${item.key})` : ""}`;
 }
 
 export function groupItems(items: InventoryItem[]) {
@@ -1296,11 +1296,11 @@ export class BriefcaseAPI {
               );
             }
 
-            const treasures = [];
+            const treasures: InventoryItem[] = [];
             for (let i = 0; i < packCount; i++) {
               let newTreasure: InventoryItem;
               newTreasure = generateTreasure(String(item.treasureKey));
-              treasures.push(newTreasure);
+              treasures.push({ ...newTreasure });
             }
 
             treasures.forEach((treasure) => customInventory.addOne(treasure));
@@ -1346,7 +1346,8 @@ export class BriefcaseAPI {
               );
             }
             const added: InventoryItem[] = [];
-            for (const item of items) {
+            for (const { ...item } of items) {
+              item.uuid = Inventory.generateUUID();
               customInventory.addOne(item);
               added.push(item);
             }
