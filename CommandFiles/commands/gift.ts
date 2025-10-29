@@ -1,6 +1,6 @@
-import { BriefcaseAPI, listItem } from "@cass-modules/BriefcaseAPI";
+import { listItem } from "@cass-modules/BriefcaseAPI";
 import { InventoryItem } from "@cass-modules/cassidyUser";
-import { countEmojis, UNISpectra } from "@cassidy/unispectra";
+import { UNISpectra } from "@cassidy/unispectra";
 import { generateGiftPack } from "@cassidy/ut-shop";
 
 export const meta: CommandMeta = {
@@ -71,7 +71,8 @@ if (true) {
   gift.flavorText =
     "Either a new companion, a rare irrelevant item, or just some trash.";
   gift.key = "pGiftPack";
-  gift.treasureKey = "randomGroupedBiasFirst_generic_petsI_petsII_petsIII";
+  gift.treasureKey =
+    "randomGroupedBiasFirst_generic_generic_petsI_petsII_petsIII";
   giftKinds.push(gift);
 }
 if (true) {
@@ -81,7 +82,7 @@ if (true) {
   gift.icon = "🎁🎴";
   gift.flavorText = "Either a rare important item, or maybe some trash.";
   gift.key = "nGiftPack";
-  gift.treasureKey = "randomGroupedBiasFirst_generic_unlucky";
+  gift.treasureKey = "randomGroupedBiasFirst_generic_generic_unlucky";
   giftKinds.push(gift);
 }
 

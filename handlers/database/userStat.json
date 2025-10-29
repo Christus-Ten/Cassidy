@@ -3,7 +3,7 @@
     "money": 10,
     "exp": 0,
     "battlePoints": 410,
-    "lastModified": 1761735499433,
+    "lastModified": 1761735660197,
     "name": "Liane",
     "usernameHistory": [
       "Liane"
@@ -87,6 +87,150 @@
     },
     "inventory": [
       {
+        "name": "***ANYPET*** Canned Food ",
+        "icon": "🥫",
+        "flavorText": "This is a canned food item, it's not very edible but it's a good product.",
+        "sellPrice": 100,
+        "type": "anypet_food",
+        "saturation": 1080000,
+        "key": "anypetCan",
+        "prob": 0.58,
+        "group": [
+          "generic",
+          "unlucky",
+          "foodpack"
+        ],
+        "isTrash": true,
+        "isGift": true,
+        "uuid": "1761735571689_ad37fc43-f35a-43ea-86dc-0053fbcc2519",
+        "index": 0,
+        "cannotToss": false
+      },
+      {
+        "name": "***CAT*** Canned Food ",
+        "icon": "🥫",
+        "flavorText": "This is a canned food item, it's not very edible but it's a good product.",
+        "sellPrice": 100,
+        "type": "cat_food",
+        "saturation": 540000,
+        "key": "catCan",
+        "prob": 0.74,
+        "group": [
+          "generic",
+          "unlucky",
+          "foodpack",
+          "curse"
+        ],
+        "isTrash": true,
+        "isGift": true,
+        "uuid": "1761735635118_8e3c0b88-13bb-42de-8677-fa9151c1ac52",
+        "index": 1,
+        "cannotToss": false
+      },
+      {
+        "name": "***DRAGON*** Canned Food ",
+        "icon": "🥫",
+        "flavorText": "This is a canned food item, it's not very edible but it's a good product.",
+        "sellPrice": 100,
+        "type": "dragon_food",
+        "saturation": 480000,
+        "key": "dragonCan",
+        "prob": 0.83,
+        "group": [
+          "generic",
+          "unlucky",
+          "foodpack",
+          "curse"
+        ],
+        "isTrash": true,
+        "isGift": true,
+        "uuid": "1761735565324_3a05dbc5-9056-4171-b356-3908d6ef4837",
+        "index": 2,
+        "cannotToss": false
+      },
+      {
+        "name": "***DRAGON*** Canned Food ",
+        "icon": "🥫",
+        "flavorText": "This is a canned food item, it's not very edible but it's a good product.",
+        "sellPrice": 100,
+        "type": "dragon_food",
+        "saturation": 360000,
+        "key": "dragonCan",
+        "prob": 0.84,
+        "group": [
+          "generic",
+          "unlucky",
+          "foodpack",
+          "curse"
+        ],
+        "isTrash": true,
+        "isGift": true,
+        "uuid": "1761735599080_d5da8477-bc6b-4829-b1c0-33028be9fa0c",
+        "index": 3,
+        "cannotToss": false
+      },
+      {
+        "key": "gsBamboo",
+        "name": "Bamboo Seed",
+        "flavorText": "Fast-growing and sturdy.",
+        "icon": "🎍",
+        "type": "gardenSeed",
+        "sellPrice": 1,
+        "cropData": {
+          "baseValue": 3610,
+          "growthTime": 9000000,
+          "harvests": 1,
+          "yields": 1,
+          "baseKG": 5
+        },
+        "group": [
+          "generic",
+          "gardenShop"
+        ],
+        "prob": 0.15,
+        "isGift": true,
+        "uuid": "1761735558240_989081a1-940f-4816-84cd-3c60e49aae5a",
+        "index": 4,
+        "cannotToss": false
+      },
+      {
+        "name": "Cerberus",
+        "key": "cerberus",
+        "flavorText": "A three-headed guardian of the underworld. Fear incarnate.",
+        "icon": "🐕‍🦺",
+        "type": "pet",
+        "sellPrice": 3000,
+        "group": [
+          "pets",
+          "petsII"
+        ],
+        "prob": 0.3333333333333333,
+        "isGift": true,
+        "uuid": "1761735626148_2cafce2f-0bd3-4635-a30a-79e6c587d871",
+        "index": 5,
+        "cannotToss": false
+      },
+      {
+        "name": "Endless Battle",
+        "icon": "🔱",
+        "flavorText": "War has never ceased in the Land of Dawn: the Endless War, the unification of the Moniyan Empire, the Conflicts in the North... The artifact has witness every struggle for survival for centuries.",
+        "key": "endlessBattle",
+        "group": [
+          "generic",
+          "legends",
+          "weaponpack"
+        ],
+        "prob": 0.05,
+        "type": "weapon",
+        "atk": 65,
+        "def": -45,
+        "sellPrice": 500000,
+        "isGift": true,
+        "uuid": "1761735660195_f1a4c860-d1c7-4aba-af54-c0ca839023cc",
+        "index": 6,
+        "cannotToss": false
+      },
+      {
         "key": "gsGemfruity",
         "name": "Gemfruity Seed",
         "flavorText": "A fruit studded with shimmering gems, ripe with crystalline wealth.",
@@ -106,46 +250,64 @@
         "prob": 1,
         "isGift": true,
         "uuid": "1761732504980_abb380a7-a719-49b6-b46d-952cb4083101",
-        "index": 0,
+        "index": 7,
         "cannotToss": false
       },
       {
-        "name": "Special Gift #1",
-        "icon": "🎁🍒",
-        "flavorText": "Either a feast for your pet, a rare irrelevant item, or just some trash.",
-        "sellPrice": 100,
-        "type": "roulette_pack",
-        "treasureKey": "randomGroupedBiasFirst_foodpack_generic",
-        "key": "fGiftPack",
-        "cannotSend": true,
-        "uuid": "1761732830822_eeafa203-0918-4baf-b41c-5fb6088d0e49",
-        "index": 1,
+        "key": "gsGemfruity",
+        "name": "Gemfruity Seed",
+        "flavorText": "A fruit studded with shimmering gems, ripe with crystalline wealth.",
+        "icon": "🍇💎",
+        "type": "gardenSeed",
+        "sellPrice": 1,
+        "cropData": {
+          "baseValue": 5500,
+          "growthTime": 7920000.000000001,
+          "harvests": 80,
+          "yields": 10
+        },
+        "group": [
+          "generic",
+          "gardenShop"
+        ],
+        "prob": 0.5,
+        "isGift": true,
+        "uuid": "1761735588043_44dcca69-544d-4a06-9cc8-5202a647bba8",
+        "index": 8,
         "cannotToss": false
       },
       {
-        "name": "Special Gift #1",
-        "icon": "🎁🍒",
-        "flavorText": "Either a feast for your pet, a rare irrelevant item, or just some trash.",
-        "sellPrice": 100,
-        "type": "roulette_pack",
-        "treasureKey": "randomGroupedBiasFirst_foodpack_generic",
-        "key": "fGiftPack",
-        "cannotSend": true,
-        "uuid": "1761733209909_625350a9-5e4a-48cb-b8e4-9b3be4007fb6",
-        "index": 2,
+        "name": "Leviathan",
+        "key": "leviathan",
+        "flavorText": "A massive sea serpent with power to stir the oceans.",
+        "icon": "🌊",
+        "type": "pet",
+        "sellPrice": 2400,
+        "group": [
+          "pets",
+          "petsII"
+        ],
+        "prob": 0.3333333333333333,
+        "isGift": true,
+        "uuid": "1761735642133_fe822a8a-3df4-4a0f-b228-ebd23815c656",
+        "index": 9,
         "cannotToss": false
       },
       {
-        "name": "Special Gift #1",
-        "icon": "🎁🍒",
-        "flavorText": "Either a feast for your pet, a rare irrelevant item, or just some trash.",
-        "sellPrice": 100,
-        "type": "roulette_pack",
-        "treasureKey": "randomGroupedBiasFirst_foodpack_generic",
-        "key": "fGiftPack",
-        "cannotSend": true,
-        "uuid": "1761734295072_42cdc326-f7d2-4535-8e11-d991249f1dfd",
-        "index": 3,
+        "name": "Snake",
+        "key": "snake",
+        "flavorText": "A mysterious pet from the Pet Shop. Intriguing to watch.",
+        "icon": "🐍",
+        "type": "pet",
+        "sellPrice": 500,
+        "group": [
+          "pets",
+          "petsI"
+        ],
+        "prob": 0.5,
+        "isGift": true,
+        "uuid": "1761735618277_3e1675e9-7134-49dd-b3ab-e8de1ed346ac",
+        "index": 10,
         "cannotToss": false
       },
       {
@@ -158,7 +320,7 @@
         "key": "fGiftPack",
         "cannotSend": true,
         "uuid": "1761734543444_1f6d4b91-3840-4d0f-8df6-d61448c3a83a",
-        "index": 4,
+        "index": 11,
         "cannotToss": false
       },
       {
@@ -171,59 +333,7 @@
         "key": "fGiftPack",
         "cannotSend": true,
         "uuid": "1761735012925_dd0e616c-ba98-4a8e-b4f0-88ce5ca89fa2",
-        "index": 5,
-        "cannotToss": false
-      },
-      {
-        "name": "Special Gift #2",
-        "icon": "🎁⚔️",
-        "flavorText": "Either a weapon your pet could wield, a rare irrelevant item, or just some trash.",
-        "sellPrice": 100,
-        "type": "roulette_pack",
-        "treasureKey": "randomGroupedBiasFirst_weaponpack_generic",
-        "key": "wGiftPack",
-        "cannotSend": true,
-        "uuid": "1761732674943_daf7c0e1-5ac3-4abd-85d2-c499d1e13842",
-        "index": 6,
-        "cannotToss": false
-      },
-      {
-        "name": "Special Gift #2",
-        "icon": "🎁⚔️",
-        "flavorText": "Either a weapon your pet could wield, a rare irrelevant item, or just some trash.",
-        "sellPrice": 100,
-        "type": "roulette_pack",
-        "treasureKey": "randomGroupedBiasFirst_weaponpack_generic",
-        "key": "wGiftPack",
-        "cannotSend": true,
-        "uuid": "1761734116342_db645e54-dcea-4573-a8fd-572144c31951",
-        "index": 7,
-        "cannotToss": false
-      },
-      {
-        "name": "Special Gift #2",
-        "icon": "🎁⚔️",
-        "flavorText": "Either a weapon your pet could wield, a rare irrelevant item, or just some trash.",
-        "sellPrice": 100,
-        "type": "roulette_pack",
-        "treasureKey": "randomGroupedBiasFirst_weaponpack_generic",
-        "key": "wGiftPack",
-        "cannotSend": true,
-        "uuid": "1761734518632_d654df08-68ba-42fa-a508-22b426e6b8c6",
-        "index": 8,
-        "cannotToss": false
-      },
-      {
-        "name": "Special Gift #2",
-        "icon": "🎁⚔️",
-        "flavorText": "Either a weapon your pet could wield, a rare irrelevant item, or just some trash.",
-        "sellPrice": 100,
-        "type": "roulette_pack",
-        "treasureKey": "randomGroupedBiasFirst_weaponpack_generic",
-        "key": "wGiftPack",
-        "cannotSend": true,
-        "uuid": "1761734531334_3bf6758f-f83c-4abd-9679-1562a0ccebf7",
-        "index": 9,
+        "index": 12,
         "cannotToss": false
       },
       {
@@ -236,7 +346,7 @@
         "key": "wGiftPack",
         "cannotSend": true,
         "uuid": "1761734717131_9fb2ef5a-997b-43f3-8603-d17098cbbfae",
-        "index": 10,
+        "index": 13,
         "cannotToss": false
       },
       {
@@ -249,7 +359,7 @@
         "key": "wGiftPack",
         "cannotSend": true,
         "uuid": "1761735034818_c8ea5409-7983-4e0b-a4c6-2f6b46928653",
-        "index": 11,
+        "index": 14,
         "cannotToss": false
       },
       {
@@ -262,45 +372,6 @@
         "key": "wGiftPack",
         "cannotSend": true,
         "uuid": "1761735281779_650627e5-5b9c-475e-a795-28eb478a7181",
-        "index": 12,
-        "cannotToss": false
-      },
-      {
-        "name": "Special Gift #3",
-        "icon": "🎁❌",
-        "flavorText": "Either a trash, a rare irrelevant item, or more trash.",
-        "sellPrice": 100,
-        "type": "roulette_pack",
-        "treasureKey": "randomGroupedBiasFirst_unlucky_curse_generic",
-        "key": "uGiftPack",
-        "cannotSend": true,
-        "uuid": "1761732627757_b9729c6e-4dd9-47f9-bd39-562512247bf0",
-        "index": 13,
-        "cannotToss": false
-      },
-      {
-        "name": "Special Gift #3",
-        "icon": "🎁❌",
-        "flavorText": "Either a trash, a rare irrelevant item, or more trash.",
-        "sellPrice": 100,
-        "type": "roulette_pack",
-        "treasureKey": "randomGroupedBiasFirst_unlucky_curse_generic",
-        "key": "uGiftPack",
-        "cannotSend": true,
-        "uuid": "1761733030872_5fa8c1cb-f6f7-4932-afd3-dd61a513eee9",
-        "index": 14,
-        "cannotToss": false
-      },
-      {
-        "name": "Special Gift #3",
-        "icon": "🎁❌",
-        "flavorText": "Either a trash, a rare irrelevant item, or more trash.",
-        "sellPrice": 100,
-        "type": "roulette_pack",
-        "treasureKey": "randomGroupedBiasFirst_unlucky_curse_generic",
-        "key": "uGiftPack",
-        "cannotSend": true,
-        "uuid": "1761734650536_029487b4-3c02-4d4c-b9e0-6e87b25d14a3",
         "index": 15,
         "cannotToss": false
       },
@@ -313,73 +384,34 @@
         "treasureKey": "randomGroupedBiasFirst_unlucky_curse_generic",
         "key": "uGiftPack",
         "cannotSend": true,
-        "uuid": "1761735207661_da691bd0-0796-4585-a7a8-848695967d7f",
+        "uuid": "1761733030872_5fa8c1cb-f6f7-4932-afd3-dd61a513eee9",
         "index": 16,
         "cannotToss": false
       },
       {
-        "name": "Special Gift #4",
-        "icon": "🎁🐶",
-        "flavorText": "Either a new companion, a rare irrelevant item, or just some trash.",
+        "name": "Special Gift #3",
+        "icon": "🎁❌",
+        "flavorText": "Either a trash, a rare irrelevant item, or more trash.",
         "sellPrice": 100,
         "type": "roulette_pack",
-        "treasureKey": "randomGroupedBiasFirst_generic_petsI_petsII_petsIII",
-        "key": "pGiftPack",
+        "treasureKey": "randomGroupedBiasFirst_unlucky_curse_generic",
+        "key": "uGiftPack",
         "cannotSend": true,
-        "uuid": "1761732948493_03e914f4-396b-4ede-95aa-7538051beb46",
+        "uuid": "1761734650536_029487b4-3c02-4d4c-b9e0-6e87b25d14a3",
         "index": 17,
         "cannotToss": false
       },
       {
-        "name": "Special Gift #4",
-        "icon": "🎁🐶",
-        "flavorText": "Either a new companion, a rare irrelevant item, or just some trash.",
+        "name": "Special Gift #3",
+        "icon": "🎁❌",
+        "flavorText": "Either a trash, a rare irrelevant item, or more trash.",
         "sellPrice": 100,
         "type": "roulette_pack",
-        "treasureKey": "randomGroupedBiasFirst_generic_petsI_petsII_petsIII",
-        "key": "pGiftPack",
+        "treasureKey": "randomGroupedBiasFirst_unlucky_curse_generic",
+        "key": "uGiftPack",
         "cannotSend": true,
-        "uuid": "1761734351204_738a6a3b-f586-4b3e-b90e-cc25a072555a",
+        "uuid": "1761735207661_da691bd0-0796-4585-a7a8-848695967d7f",
         "index": 18,
-        "cannotToss": false
-      },
-      {
-        "name": "Special Gift #4",
-        "icon": "🎁🐶",
-        "flavorText": "Either a new companion, a rare irrelevant item, or just some trash.",
-        "sellPrice": 100,
-        "type": "roulette_pack",
-        "treasureKey": "randomGroupedBiasFirst_generic_petsI_petsII_petsIII",
-        "key": "pGiftPack",
-        "cannotSend": true,
-        "uuid": "1761734639993_ef47c3d9-08f7-4df7-a82c-f5b5ba76dc58",
-        "index": 19,
-        "cannotToss": false
-      },
-      {
-        "name": "Special Gift #4",
-        "icon": "🎁🐶",
-        "flavorText": "Either a new companion, a rare irrelevant item, or just some trash.",
-        "sellPrice": 100,
-        "type": "roulette_pack",
-        "treasureKey": "randomGroupedBiasFirst_generic_petsI_petsII_petsIII",
-        "key": "pGiftPack",
-        "cannotSend": true,
-        "uuid": "1761735436336_5daa3801-61cc-4c41-bcc4-dea0a032d5e5",
-        "index": 20,
-        "cannotToss": false
-      },
-      {
-        "name": "Special Gift #4",
-        "icon": "🎁🐶",
-        "flavorText": "Either a new companion, a rare irrelevant item, or just some trash.",
-        "sellPrice": 100,
-        "type": "roulette_pack",
-        "treasureKey": "randomGroupedBiasFirst_generic_petsI_petsII_petsIII",
-        "key": "pGiftPack",
-        "cannotSend": true,
-        "uuid": "1761735499432_513acdb3-90a3-4844-a43e-df1428a89549",
-        "index": 26,
         "cannotToss": false
       },
       {
@@ -392,7 +424,7 @@
         "key": "nGiftPack",
         "cannotSend": true,
         "uuid": "1761734159553_6cab488d-fae9-4e72-b822-481a07dd5a7b",
-        "index": 21,
+        "index": 19,
         "cannotToss": false
       },
       {
@@ -405,7 +437,7 @@
         "key": "nGiftPack",
         "cannotSend": true,
         "uuid": "1761734707323_f8733af6-13e0-4b70-8dad-df513477d0be",
-        "index": 22,
+        "index": 20,
         "cannotToss": false
       },
       {
@@ -418,7 +450,7 @@
         "key": "nGiftPack",
         "cannotSend": true,
         "uuid": "1761734749498_ba0a70dd-bde5-431d-bd2a-daff5d95041d",
-        "index": 23,
+        "index": 21,
         "cannotToss": false
       },
       {
@@ -431,7 +463,7 @@
         "key": "nGiftPack",
         "cannotSend": true,
         "uuid": "1761734956453_fe8c7d56-e398-4b1c-a417-759ab392be0e",
-        "index": 24,
+        "index": 22,
         "cannotToss": false
       },
       {
@@ -444,7 +476,70 @@
         "key": "nGiftPack",
         "cannotSend": true,
         "uuid": "1761735379602_b8419a38-efd6-4b33-aae3-30d3e372c340",
+        "index": 23,
+        "cannotToss": false
+      },
+      {
+        "key": "gsTomato",
+        "name": "Tomato Seed",
+        "flavorText": "Juicy tomatoes for big profits.",
+        "icon": "🍅",
+        "type": "gardenSeed",
+        "sellPrice": 800,
+        "cropData": {
+          "baseValue": 27,
+          "growthTime": 3150000,
+          "harvests": 40,
+          "yields": 5
+        },
+        "group": [
+          "generic",
+          "gardenShop"
+        ],
+        "prob": 0.5,
+        "isGift": true,
+        "uuid": "1761735582577_b091f0c3-1a70-4453-b927-9bac5080aa66",
+        "index": 24,
+        "cannotToss": false
+      },
+      {
+        "key": "gsTomato",
+        "name": "Tomato Seed",
+        "flavorText": "Juicy tomatoes for big profits.",
+        "icon": "🍅",
+        "type": "gardenSeed",
+        "sellPrice": 800,
+        "cropData": {
+          "baseValue": 27,
+          "growthTime": 3150000,
+          "harvests": 40,
+          "yields": 5
+        },
+        "group": [
+          "generic",
+          "gardenShop"
+        ],
+        "prob": 0.5,
+        "isGift": true,
+        "uuid": "1761735607297_faf81c48-7739-4184-b22c-d354bba9de0e",
         "index": 25,
+        "cannotToss": false
+      },
+      {
+        "name": "Unicorn",
+        "key": "unicorn",
+        "flavorText": "A mythical horse with a single horn. Radiates purity and magic.",
+        "icon": "🦄",
+        "type": "pet",
+        "sellPrice": 2000,
+        "group": [
+          "pets",
+          "petsII"
+        ],
+        "prob": 0.3333333333333333,
+        "isGift": true,
+        "uuid": "1761735650958_36030320-0f87-4918-bbbf-ba5355af6fb7",
+        "index": 26,
         "cannotToss": false
       }
     ],
