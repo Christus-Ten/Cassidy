@@ -850,7 +850,7 @@ export class OutputClass implements OutputProps {
         optionsCopy.useWebMode || optionsCopy.threadID === "webpanel"
           ? globalThis.wssAPI
           : this.api;
-      return new Promise((res) => {
+      return new Promise(async (res) => {
         if (optionsCopy.contactID && input.isFacebook) {
           this.api.shareContact(
             options.body,
@@ -869,35 +869,52 @@ export class OutputClass implements OutputProps {
           );
           return;
         }
-        api.sendMessage(
-          // @ts-ignore
 
-          options,
-          optionsCopy.threadID || event.threadID,
-          async (err, info) => {
-            if (typeof optionsCopy.callback === "function") {
-              // @ts-ignore
+        const cbb = async (
+          err: any,
+          info: { messageID: string; threadID: string; timestamp: number }
+        ) => {
+          if (typeof optionsCopy.callback === "function") {
+            // @ts-ignore
 
-              await optionsCopy.callback(info);
-            }
+            await optionsCopy.callback(info);
+          }
 
-            if (err) {
-              console.log(err);
-            }
+          if (err) {
+            console.log(err);
+          }
 
-            const resu = new OutputSent(obj, {
-              ...options,
-              ...info,
-              ...resultInfo,
-              senderID: api.getCurrentUserID() || "",
-              body: options.body,
-            });
-            this.LASTID = resu.messageID;
-            res(resu);
-          },
-          optionsCopy.messageID ||
-            (optionsCopy.isReply ? event.messageID : null)
-        );
+          const resu = new OutputSent(obj, {
+            ...options,
+            ...info,
+            ...resultInfo,
+            senderID: api.getCurrentUserID() || "",
+            body: options.body,
+          });
+          this.LASTID = resu.messageID;
+          res(resu);
+        };
+        if (api.sendMessage?.length === 5) {
+          api.sendMessage(
+            // @ts-ignore
+
+            options,
+            optionsCopy.threadID || event.threadID,
+            cbb,
+            optionsCopy.messageID ||
+              (optionsCopy.isReply ? event.messageID : null)
+          );
+        } else {
+          const res = await api.sendMessage(
+            // @ts-ignore
+
+            options,
+            optionsCopy.threadID || event.threadID,
+            optionsCopy.messageID ||
+              (optionsCopy.isReply ? event.messageID : null)
+          );
+          cbb(null, res);
+        }
       });
     } else {
       throw new Error("Something is wrong.");
