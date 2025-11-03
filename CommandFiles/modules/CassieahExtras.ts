@@ -1,7 +1,6 @@
 import {
   Canvas,
   CanvasGradient,
-  CanvasRenderingContext2D,
   CanvasTextAlign,
   CanvasTextBaseline,
   Path2D,
@@ -9,7 +8,6 @@ import {
   Image,
   SKRSContext2D,
   createCanvas,
-  loadImage,
   loadImage as loadImageOrig,
   LoadImageOptions,
 } from "@napi-rs/canvas";
@@ -195,7 +193,7 @@ export class CanvCass implements CanvCass.Rect {
         fill: this.#config.background,
       });
     } else {
-      const bg = await loadImage(
+      const bg = await CanvCass.loadImage(
         join(process.cwd(), "public", "canvcassbg.png")
       );
       if (bg) {
