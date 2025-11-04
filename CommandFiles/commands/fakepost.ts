@@ -5,7 +5,7 @@ export const meta: CommandMeta = {
   name: "fpost",
   description: "Generate a fake FB post image via CanvCass",
   author: "Liane Cagara",
-  version: "1.0.1",
+  version: "2.0.0",
   usage: "{prefix}{name} <caption>",
   category: "Media",
   permissions: [0],
@@ -159,6 +159,7 @@ export async function entry({
       });
 
       const captionTxtsize = 48;
+      const reactsize = 25;
 
       const wallImg = CanvCass.createRect({
         height: canv.width / (16 / 9),
@@ -200,13 +201,24 @@ export async function entry({
         height: buttonss + margin * 2,
         width: canv.width,
         centerX: canv.centerX,
-        top: wallImg.bottom + margin,
+        top: wallImg.bottom + reactsize + 4,
+      });
+
+      canv.drawText(`❤️👍 ${randomInt(3, 576)}K`, {
+        size: reactsize,
+        fontType: "cnormal",
+        align: "left",
+        x: footer.left + margin,
+        y: footer.top - 4,
+        fill: "white",
       });
 
       const amount = 3;
       const bsp = 15;
       const btw = (canv.width - (amount + 1) * bsp) / amount;
+      const contents = [`👍 Like`, `💬 Comment`, `✈️ Share`];
       for (let i = 0; i < amount; i++) {
+        const content = contents.at(i);
         const rect = CanvCass.createRect({
           left: canv.left + i * (btw + bsp) + bsp,
           width: btw,
@@ -217,6 +229,14 @@ export async function entry({
           fill: "rgba(55, 59, 58, 1)",
           rect,
           cornerRadius: rect.height / 2,
+        });
+        canv.drawText(content ?? "??", {
+          size: reactsize,
+          fontType: "cbold",
+          align: "center",
+          x: rect.centerX,
+          y: rect.centerY,
+          fill: lw,
         });
       }
 
