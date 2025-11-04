@@ -157,19 +157,19 @@ export async function entry({
         fill: lw,
       });
 
-      const captionTxtsize = 50;
+      const captionTxtsize = 48;
 
       const wallImg = CanvCass.createRect({
         height: canv.width / (16 / 9),
         width: canv.width,
         left: canv.left,
-        top: header.bottom + margin,
+        top: header.bottom - margin,
       });
 
       const gradient = canv.tiltedGradient(
         wallImg.width,
         wallImg.height,
-        Math.PI / 4,
+        -Math.PI / 4,
         [
           [0, "rgba(255, 0, 71, 1)"],
           [1, "rgba(44, 52, 199, 1)"],
