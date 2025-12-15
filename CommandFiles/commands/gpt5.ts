@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { StrictOutputForm } from "output-cassidy";
 
 const cmd = easyCMD({
-  name: "gpt",
+  name: "gpt5",
   meta: {
     otherNames: ["gpt5", "ai2", "ask"],
     author: "Christus Dev AI",
