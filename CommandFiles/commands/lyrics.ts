@@ -1,67 +1,100 @@
-// @ts-check
-
-/**
- * @type {CommandMeta}
- */
-export const meta = {
-  name: "lyrics",
-  description: "Récupérer les paroles d'une chanson avec illustration",
-  author: "Christus dev AI",
-  version: "1.2.0",
-  usage: "{prefix}{name} <nom de la chanson>",
-  category: "Search",
-  permissions: [0],
-  waitingTime: 5,
-  otherNames: ["lyrics-song", "lyric"],
-  icon: "🎼",
-  noWeb: true,
-};
-
 import axios from "axios";
-import fs from "fs-extra";
+import fs from "fs";
 import path from "path";
 import { defineEntry } from "@cass/define";
+import { UNISpectra } from "@cassidy/unispectra";
 
-const CACHE_DIR = path.join(process.cwd(), "cache", "lyrics");
-
-async function downloadImage(url: string, filename: string) {
-  const filePath = path.join(CACHE_DIR, filename);
-  try {
-    const { data } = await axios.get(url, { responseType: "arraybuffer", timeout: 120_000 });
-    await fs.writeFile(filePath, data);
-    return filePath;
-  } catch (err) {
-    if (fs.existsSync(filePath)) await fs.unlink(filePath).catch(() => {});
-    throw new Error("Échec du téléchargement de l'image de la pochette.");
-  }
+interface LyricsResponse {
+  artist_name: string;
+  track_name: string;
+  artwork_url: string;
+  lyrics: string;
 }
 
-export const entry = defineEntry(async ({ args, output }) => {
-  const query = args.join(" ").trim();
-  if (!query) return output.reply("❌ Veuillez fournir le nom d'une chanson.\nExemple : lyrics apt");
+export const meta: CommandMeta = {
+  name: "lyrics",
+  author: "Christus dev AI",
+  version: "1.2.0",
+  description: "Retrieve song lyrics with artist and artwork",
+  category: "Search",
+  usage: "{prefix}{name} <song name>",
+  role: 0,
+  waitingTime: 5,
+  icon: "🎼",
+  noLevelUI: true,
+};
 
-  await fs.ensureDir(CACHE_DIR);
-  await output.reply(`⏳ Recherche des paroles pour : **${query}**`);
+export const style: CommandStyle = {
+  title: "Astral • Lyrics Finder 🎶",
+  titleFont: "bold",
+  contentFont: "fancy",
+};
 
-  try {
-    const { data } = await axios.get<any>(
-      `https://lyricstx.vercel.app/youtube/lyrics?title=${encodeURIComponent(query)}`,
-      { timeout: 120_000 }
-    );
+export const langs = {
+  fr: {
+    missing: "⚠️ Veuillez fournir le nom d'une chanson !\nExemple : lyrics apt",
+    notFound: "❌ Paroles non trouvées.",
+    error: "❌ Erreur : Impossible de récupérer les paroles.",
+  },
+};
 
-    if (!data?.lyrics) throw new Error("Paroles non trouvées pour cette chanson.");
+function formatLyrics(data: LyricsResponse) {
+  return `${UNISpectra.charm} Lyrics Transmission
+${UNISpectra.standardLine}
+🎼 Titre   : ${data.track_name}
+👤 Artiste : ${data.artist_name}
+${UNISpectra.standardLine}
 
-    const { artist_name, track_name, artwork_url, lyrics } = data;
-    const imgPath = await downloadImage(artwork_url, `lyrics_${Date.now()}.jpg`);
+${data.lyrics}
 
-    await output.reply({
-      body: `🎼 **${track_name}**\n👤 Artiste : ${artist_name}\n\n${lyrics}`,
-      attachment: fs.createReadStream(imgPath),
-    });
+${UNISpectra.standardLine}
+${UNISpectra.charm} CassidyAstral 🌌`;
+}
 
-    if (fs.existsSync(imgPath)) await fs.unlink(imgPath).catch(() => {});
-  } catch (err: any) {
-    console.error("Lyrics Command Error:", err);
-    output.reply(`❌ Échec de la récupération : ${err.message}`);
+export const entry = defineEntry(
+  async ({ args, output, langParser }) => {
+    const t = langParser.createGetLang(langs);
+    const query = args.join(" ");
+
+    if (!query) return output.reply(t("missing"));
+
+    try {
+      const { data } = await axios.get<LyricsResponse>(
+        `https://lyricstx.vercel.app/youtube/lyrics?title=${encodeURIComponent(
+          query
+        )}`
+      );
+
+      if (!data?.lyrics) return output.reply(t("notFound"));
+
+      const imagePath = path.join(__dirname, `lyrics_${Date.now()}.jpg`);
+
+      try {
+        const img = await axios.get(data.artwork_url, {
+          responseType: "stream",
+        });
+
+        const writer = fs.createWriteStream(imagePath);
+        img.data.pipe(writer);
+
+        await new Promise<void>((resolve, reject) => {
+          writer.on("finish", resolve);
+          writer.on("error", reject);
+        });
+
+        await output.reply({
+          body: formatLyrics(data),
+          attachment: fs.createReadStream(imagePath),
+        });
+
+        fs.unlinkSync(imagePath);
+      } catch {
+        // fallback sans image
+        await output.reply(formatLyrics(data));
+      }
+    } catch (err) {
+      console.error("Lyrics Error:", err);
+      output.reply(t("error"));
+    }
   }
-});
+);
