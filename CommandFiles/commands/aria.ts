@@ -7,8 +7,8 @@ const API_KEY = "rapi_55197dde42fb4272bfb8f35bd453ba25";
 const cmd = easyCMD({
   name: "aria",
   meta: {
-    otherNames: ["rapidoai"],
-    author: "Christus dev AI""
+    otherNames: ["aiaria"],
+    author: "Christus dev AI",
     description: "Aria AI – Powered by Zetsu Rapido",
     icon: "🤖",
     version: "1.0.0",
