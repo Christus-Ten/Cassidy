@@ -35,7 +35,7 @@ export const meta: CommandMeta = {
 /* -------------------- STYLE -------------------- */
 
 export const style: CommandStyle = {
-  title: "Astral • Animate Generator 🎞️",
+  title: "Christus • Animate Generator 🎞️",
   titleFont: "bold",
   contentFont: "fancy",
 };
@@ -80,8 +80,8 @@ ${UNISpectra.charm} Animate Generator
  • ✨ Prompt: ${prompt}
 ${UNISpectra.standardLine}
 ${getLang("generating")}
-${UNISpectra.charm} CassidyAstral-Midnight 🌃 ${UNISpectra.charm}
-[ Transmission from Astral Command ]`
+${UNISpectra.charm} ChristusBot-Midnight 🌃 ${UNISpectra.charm}
+[ Transmission from Christus Command ]`
     );
 
     let tempFilePath: string | null = null;
@@ -111,6 +111,34 @@ ${UNISpectra.charm} CassidyAstral-Midnight 🌃 ${UNISpectra.charm}
         CACHE_DIR,
         `animate_${Date.now()}_${Math.random()
           .toString(36)
+          .slice(2, 8)}.mp4`
+      );
+
+      await pipeline(
+        videoResponse.data,
+        fs.createWriteStream(tempFilePath)
+      );
+
+      await output.reply({
+        body: `${formatHeader()}
+${UNISpectra.charm} Animate Result
+ • 🎞️ Prompt: ${prompt}
+${UNISpectra.standardLine}
+${getLang("success")}
+${UNISpectra.charm} ChristusBot-Midnight 🌃 ${UNISpectra.charm}
+[ Transmission from Astral Command ]`,
+        attachment: fs.createReadStream(tempFilePath),
+      });
+    } catch (err) {
+      console.error("Animate Command Error:", err);
+      output.reply(getLang("failed"));
+    } finally {
+      if (tempFilePath && (await fs.pathExists(tempFilePath))) {
+        fs.unlink(tempFilePath).catch(() => {});
+      }
+    }
+  }
+);          .toString(36)
           .slice(2, 8)}.mp4`
       );
 
