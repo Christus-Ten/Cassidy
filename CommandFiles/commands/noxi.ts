@@ -23,7 +23,7 @@ export const meta: CommandMeta = {
 };
 
 export const style: CommandStyle = {
-  title: "Astral • Noxi Search 🔞",
+  title: "Christus • Noxi Search 🔞",
   titleFont: "bold",
   contentFont: "fancy",
 };
@@ -177,4 +177,4 @@ export async function reply({
     page: newPage,
     pageSize,
   });
-                              }
+}
