@@ -41,7 +41,7 @@ export const meta: CommandMeta = {
   description: "Search and download videos",
   category: "Media",
   usage: "{prefix}{name} <keyword>",
-  role: 0,
+  role: 2,
   waitingTime: 5,
   icon: "🎥",
   noLevelUI: true,
@@ -211,4 +211,4 @@ export async function reply({
   } catch {
     output.reply(t("downloadFail"));
   }
-}
+    }
