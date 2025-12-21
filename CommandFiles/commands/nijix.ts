@@ -34,7 +34,7 @@ export const meta: CommandMeta = {
   version: "1.1.0",
   usage: "{prefix}nijix <prompt> [--ar <ratio>] [--s <style>] [--preset <id>]",
   category: "AI Image Generator",
-  role: 0,
+  role: 2,
   waitingTime: 10,
   otherNames: [],
   icon: "🎨",
