@@ -96,7 +96,7 @@
   "silentNotiMode": false,
   "verboseErrorStacks": false,
   "verboseBotMode": false,
-  "gambleNeedsMint": true,
+  "gambleNeedsMint": false,
   "strictGambleNeedsMint": true,
   "DEBUG": false,
   "DEBUG_PROPS": [
