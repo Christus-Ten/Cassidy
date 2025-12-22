@@ -2,19 +2,15 @@ import { defineCommand } from "@cass/define";
 
 const mediaTypes = ["photo", "video", "audio", "animated_image", "png"];
 
-/* ================= META ================= */
-
 export const meta = {
   name: "callad",
   version: "2.2.0",
-  author: "Christus",
+  author: "Christus, fix by Kay",
   description: "Unlimited user ↔ admin contact with attachments",
   usage: "{prefix}callad <message>",
   category: "admin",
   role: 0,
 };
-
-/* ================= STYLE ================= */
 
 export const style = {
   title: "📨 Call Admin",
@@ -23,15 +19,13 @@ export const style = {
   topLine: "thin",
 };
 
-/* ================= COMMAND ================= */
-
 const command = defineCommand({
   meta,
   style,
 
   async entry({ input, output, api }: CommandContext) {
     const message = input.args.join(" ");
-    const userTid = input.tid;
+    const userThreadID = input.tid;
     const senderName = input.senderName ?? "Unknown";
     const senderID = input.sid;
 
@@ -44,8 +38,6 @@ const command = defineCommand({
       ...(input.messageReply?.attachments || []),
     ].filter((a) => mediaTypes.includes(a.type));
 
-    /* ========= USER → ADMIN ========= */
-
     for (const adminID of Cassidy.config.ADMINBOT) {
       output.sendStyled(
         `👤 User: ${senderName}\n🆔 ID: ${senderID}\n\n💬 ${message}`,
@@ -53,22 +45,18 @@ const command = defineCommand({
         adminID,
         attachments
       ).then((adminMsg) => {
-
-        /* ========= ADMIN REPLY ========= */
-
-        adminMsg.atReply((adminCtx) => {
+        
+        const handleAdminReply = (adminCtx) => {
           const adminText = adminCtx.input.body;
           const adminAttachments = adminCtx.input.attachments || [];
 
           output.sendStyled(
             `📩 Admin:\n${adminText}`,
             style,
-            userTid,
+            userThreadID,
             adminAttachments
           ).then((userMsg) => {
-
-            /* ========= USER LOOP ========= */
-
+            
             userMsg.atReply((userCtx) => {
               const userText = userCtx.input.body;
               const userAttachments = userCtx.input.attachments || [];
@@ -79,16 +67,13 @@ const command = defineCommand({
                 adminID,
                 userAttachments
               ).then((loopAdminMsg) => {
-
-                /* 🔁 RE-ATTACH ADMIN REPLY (LOOP) */
-                loopAdminMsg.atReply(adminCtx.callback);
-
+                loopAdminMsg.atReply(handleAdminReply);
               });
             });
-
           });
-        });
+        };
 
+        adminMsg.atReply(handleAdminReply);
       });
     }
 
