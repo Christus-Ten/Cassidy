@@ -2,222 +2,173 @@ import axios from "axios";
 import fs from "fs";
 import path from "path";
 
-interface SupportedDomain {
-  domain: string;
-  cookieFile: string | null;
-}
-
-const supportedDomains: SupportedDomain[] = [
-  { domain: "facebook.com", cookieFile: null },
-  { domain: "instagram.com", cookieFile: "insta.txt" },
-  { domain: "youtube.com", cookieFile: "yt.txt" },
-  { domain: "youtu.be", cookieFile: "yt.txt" },
-  { domain: "pinterest.com", cookieFile: null },
-  { domain: "tiktok.com", cookieFile: null },
-];
-
-interface DownloadParams {
-  filesize?: number;
-  format?: "video" | "audio";
-  cookies?: string;
-}
-
 export const meta: CommandMeta = {
-  name: "dl",
+  name: "autodl",
   description:
-    "Download videos or audios from supported platforms with optional parameters (size, format, cookies).",
-  version: "2.3.0",
+    "Autodownloader for YouTube, Spotify, TikTok, Instagram, and other media URLs.",
+  version: "3.0.1",
   author: "Christus dev AI",
+  requirement: "2.5.0",
+  icon: "📥",
   category: "Media",
-  icon: "⬇️",
-  role: 0,
+  role: 1,
   noWeb: true,
 };
 
 export const style: CommandStyle = {
-  title: "⬇️ Media Downloader",
+  title: "📥 Media Auto Downloader",
   titleFont: "bold",
   contentFont: "fancy",
 };
 
-/* ---------------- HELPERS ---------------- */
+const supportedLinks: Record<string, RegExp> = {
+  youtube: /(youtube\.com|youtu\.be)/i,
+  instagram: /(instagram\.com|instagr\.am)/i,
+  tiktok: /(tiktok\.com|vm\.tiktok\.com)/i,
+  capcut: /(capcut\.com)/i,
+  facebook: /(facebook\.com|fb\.watch)/i,
+  twitter: /(twitter\.com|x\.com)/i,
+  dailymotion: /(dailymotion\.com|dai\.ly)/i,
+  vimeo: /(vimeo\.com)/i,
+  pinterest: /(pinterest\.com|pin\.it)/i,
+  imgur: /(imgur\.com)/i,
+  soundcloud: /(soundcloud\.com|on\.soundcloud\.com)/i,
+  spotify: /(spotify\.com|spotify\.link)/i,
+  ted: /(ted\.com)/i,
+  tumblr: /(tumblr\.com)/i,
+};
 
-function getMainDomain(url: string): string | null {
+function isSupported(url: string) {
+  return Object.values(supportedLinks).some(r => r.test(url));
+}
+
+function formatDuration(durationMs: number) {
+  const units = [
+    { unit: "hr", factor: 3600000 },
+    { unit: "min", factor: 60000 },
+    { unit: "sec", factor: 1000 },
+    { unit: "ms", factor: 1 },
+  ];
+  for (const { unit, factor } of units) {
+    if (durationMs >= factor) {
+      const value = durationMs / factor;
+      return `${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)} ${unit}`;
+    }
+  }
+  return "0 ms";
+}
+
+async function downloadMedia(url: string, output: CommandContext["output"]) {
+  if (!isSupported(url)) return output.reply("❌ This platform is not supported.");
+
+  output.react("⏳");
+  let res;
   try {
-    const hostname = new URL(url).hostname;
-    if (hostname === "youtu.be") return "youtube.com";
-    const parts = hostname.split(".");
-    return parts.length > 2 ? parts.slice(-2).join(".") : hostname;
-  } catch {
-    return null;
+    const apiUrl = `https://downvid.onrender.com/api/download?url=${encodeURIComponent(url)}`;
+    res = await axios.get(apiUrl, { timeout: 60000 });
+  } catch (err) {
+    console.error(err);
+    output.react("❌");
+    return output.reply("❌ Download failed (connection error).");
   }
-}
 
-function getDefaultCookie(domain: string | null): string | null {
-  if (!domain) return null;
-  return supportedDomains.find((d) => d.domain === domain)?.cookieFile ?? null;
-}
+  const data = res.data;
+  if (!data || data.status !== "success") {
+    output.react("❌");
+    return output.reply("❌ Download failed (API error).");
+  }
 
-function parseArgs(args: string[]): DownloadParams {
-  const params: DownloadParams = {};
+  const mediaData = data?.data?.data || {};
+  const videoUrl = data.video || mediaData.nowm || null;
+  const audioUrl = data.audio || null;
 
-  args.forEach((arg, i) => {
-    if (!arg.startsWith("--")) return;
+  const downloads: { url: string; type: "video" | "audio" }[] = [];
+  let header = "";
 
-    const key = arg.slice(2).toLowerCase();
-    const value = args[i + 1];
+  const isSpotify = supportedLinks.spotify.test(url);
+  const isYouTube = supportedLinks.youtube.test(url);
 
-    switch (key) {
-      case "maxsize":
-      case "fs":
-      case "ms":
-        if (!isNaN(Number(value))) params.filesize = Number(value);
-        break;
+  if (isSpotify) {
+    if (!audioUrl) return output.reply("❌ No audio for Spotify link.");
+    downloads.push({ url: audioUrl, type: "audio" });
+    header = "✅ Spotify Audio 🎧\n\n";
+  } else if (isYouTube) {
+    if (videoUrl) downloads.push({ url: videoUrl, type: "video" });
+    if (audioUrl) downloads.push({ url: audioUrl, type: "audio" });
+    if (!downloads.length) return output.reply("❌ No media for YouTube link.");
+    header =
+      downloads.length === 2
+        ? "✅ YouTube Video + Audio 🎬🎧\n\n"
+        : downloads[0].type === "video"
+        ? "✅ YouTube Video 🎬\n\n"
+        : "✅ YouTube Audio 🎧\n\n";
+  } else {
+    if (!videoUrl) return output.reply("❌ No video found for this link.");
+    downloads.push({ url: videoUrl, type: "video" });
+    header = "✅ Video Downloaded 🎬\n\n";
+  }
 
-      case "type":
-      case "format":
-      case "media":
-      case "f":
-        if (value && ["video", "audio"].includes(value.toLowerCase())) {
-          params.format = value.toLowerCase() as "video" | "audio";
-        }
-        break;
+  const title = mediaData.title || mediaData.shortTitle || "Downloaded Media";
+  const likes = mediaData.like ?? "N/A";
+  const comments = mediaData.comment ?? "N/A";
+  const duration = mediaData.duration_ms ? formatDuration(mediaData.duration_ms) : "N/A";
 
-      case "cookie":
-      case "cookies":
-      case "c":
-        if (!value) break;
-        const cookiePath = path.join(process.cwd(), value);
-        if (fs.existsSync(cookiePath)) {
-          params.cookies = fs.readFileSync(cookiePath, "utf-8");
-        }
-        break;
+  // Message sans le lien de la vidéo
+  const message = `${header}📌 Title: ${title}\n👍 Likes: ${likes}   💬 Comments: ${comments}\n⏱️ Duration: ${duration}`;
+
+  const cacheDir = path.join(__dirname, "cache");
+  if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir, { recursive: true });
+
+  const streams: fs.ReadStream[] = [];
+  const tempFiles: string[] = [];
+
+  try {
+    for (const item of downloads) {
+      const ext = item.type === "audio" ? "mp3" : "mp4";
+      const tempPath = path.join(
+        cacheDir,
+        `autodl_${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`
+      );
+      const response = await axios.get(item.url, { responseType: "arraybuffer", timeout: 120000 });
+      fs.writeFileSync(tempPath, response.data);
+      streams.push(fs.createReadStream(tempPath));
+      tempFiles.push(tempPath);
     }
-  });
 
-  return params;
+    await output.replyStyled({ body: message, attachment: streams }, style);
+    tempFiles.forEach(file => { try { fs.unlinkSync(file); } catch (_) {} });
+    output.reaction("✅");
+  } catch (err) {
+    console.error(err);
+    tempFiles.forEach(file => { try { fs.unlinkSync(file); } catch (_) {} });
+    output.react("❌");
+    output.reply("❌ Error while downloading or sending file(s).");
+  }
 }
 
-async function downloadMedia(
-  url: string,
-  params: DownloadParams,
-  output: CommandContext["output"],
-  input: CommandContext["input"]
-) {
-  const domain = getMainDomain(url);
+export async function entry({ output, input, threadsDB, args }: CommandContext) {
+  if (!input.isAdmin) return output.reply("You cannot enable/disable this feature.");
 
-  if (!params.cookies) {
-    const defaultCookie = getDefaultCookie(domain);
-    if (defaultCookie) {
-      const cookiePath = path.join(process.cwd(), defaultCookie);
-      if (fs.existsSync(cookiePath)) {
-        params.cookies = fs.readFileSync(cookiePath, "utf-8");
-      }
-    }
-  }
-
-  params.filesize ??= 25;
-
-  const apiUrl = (
-    await axios.get(
-      "https://raw.githubusercontent.com/Tanvir0999/stuffs/refs/heads/main/raw/addresses.json"
-    )
-  ).data.megadl;
-
-  const response = await axios.post(apiUrl, {
-    url,
-    ...(params.format && { format: params.format }),
-    ...(params.filesize && { filesize: params.filesize }),
-    ...(params.cookies && { cookies: params.cookies }),
-  });
-
-  const data = response.data;
-
-  await output.replyStyled(
-    {
-      body: `• ${
-        data.title.length > 50
-          ? data.title.slice(0, 50) + "..."
-          : data.title
-      }
-• Duration: ${data.duration}
-• Upload Date: ${data.upload_date || "--"}
-• Source: ${data.source}
-
-• Stream: ${data.url}`,
-      attachment: await global.utils.getStreamFromURL(data.url),
-    },
-    style
-  );
-
-  output.reaction("✅");
-}
-
-/* ---------------- ENTRY ---------------- */
-
-export async function entry({
-  output,
-  input,
-  args,
-  threadsDB,
-}: CommandContext) {
-  if (
-    (args[0] === "on" ||
-      args[0] === "off" ||
-      (args[0] === "chat" && ["on", "off"].includes(args[1]))) &&
-    !input.isAdmin
-  ) {
-    return output.reply("You do not have permission to change this setting.");
-  }
-
-  if (args[0] === "on" || args[0] === "off" || args[1] === "on" || args[1] === "off") {
-    const choice = args[0] === "on" || args[1] === "on";
-    const cache = await threadsDB.getCache(input.threadID);
-
-    await threadsDB.setItem(input.threadID, {
-      autoDownload: choice,
-      ...cache,
-    });
-
-    return output.reply(
-      `Auto-download has been turned ${choice ? "on ✅" : "off ❌"}`
-    );
-  }
-
-  const url = args.find((a) => /^https?:\/\//.test(a));
-  if (!url) return output.reply("Please provide a valid URL.");
-
-  const domain = getMainDomain(url);
-  if (!supportedDomains.some((d) => d.domain === domain)) {
-    return output.reply("This platform is not supported.");
-  }
-
-  const params = parseArgs(args.filter((a) => a !== url));
-  output.react("⏳");
-
-  await downloadMedia(url, params, output, input);
-}
-
-/* ---------------- EVENT ---------------- */
-
-export async function event({
-  output,
-  input,
-  threadsDB,
-}: CommandContext) {
   const cache = await threadsDB.getCache(input.threadID);
-  if (cache.autoDownload === false) return;
-  if (input.senderID === global.botID) return;
+  const isEnabled = cache.autodl ?? false;
+  const choice = args[0] === "on" ? true : args[0] === "off" ? false : !isEnabled;
 
-  const text = String(input);
-  const match = text.match(/https:\/\/[^\s]+/);
-  if (!match) return;
+  await threadsDB.setItem(input.threadID, { autodl: choice });
+  output.reply(`✅ ${choice ? "Enabled" : "Disabled"} successfully!`);
 
-  const url = match[0];
-  const domain = getMainDomain(url);
+  const match = args.join(" ").match(/https?:\/\/\S+/i);
+  if (match) await downloadMedia(match[0], output);
+}
 
-  if (!supportedDomains.some((d) => d.domain === domain)) return;
+export async function event({ output, input, threadsDB }: CommandContext) {
+  try {
+    const cache = await threadsDB.getCache(input.threadID);
+    if (cache.autodl === false) return;
 
-  output.react("⏳");
-  await downloadMedia(url, {}, output, input);
+    const body = String(input);
+    const match = body.match(/https?:\/\/\S+/i);
+    if (match) await downloadMedia(match[0], output);
+  } catch (err) {
+    output.replyStyled(require("util").inspect(err), style);
+  }
 }
