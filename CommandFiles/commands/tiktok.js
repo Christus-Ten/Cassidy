@@ -1,65 +1,174 @@
-// @ts-check
+import axios from "axios";
+import fs from "fs";
+import path from "path";
+import moment from "moment-timezone";
+import { defineEntry } from "@cass/define";
+import { UNISpectra } from "@cassidy/unispectra";
 
-/**
- * @type {CommandMeta}
- */
-export const meta = {
+interface TikTokVideo {
+  title: string;
+  videoUrl: string;
+  duration: number;
+  cover: string;
+  author: {
+    unique_id: string;
+  };
+}
+
+const TIKTOK_API =
+  "https://lyric-search-neon.vercel.app/kshitiz?keyword=";
+
+export const meta: CommandMeta = {
   name: "tiktok",
-  description:
-    "Searches for TikTok videos based on your query and sends a video.",
-  author: "MrKimstersDev | haji-mix-api",
+  otherNames: ["tt"],
+  author: "Christus dev AI",
   version: "1.0.0",
-  usage: "{prefix}{name} <search query>",
+  description: "Search and download TikTok videos",
   category: "Media",
-  permissions: [0],
-  noPrefix: false,
-  waitingTime: 10,
-  requirement: "3.0.0",
-  otherNames: ["tt", "tiktoksearch"],
+  usage: "{prefix}{name} <search query>",
+  role: 0,
+  waitingTime: 5,
   icon: "🎵",
   noLevelUI: true,
-  noWeb: true,
 };
 
-/**
- * @type {CommandStyle}
- */
-export const style = {
-  title: "TikTok Video 🎵",
+export const style: CommandStyle = {
+  title: "Christus • TikTok Downloader 🎵",
   titleFont: "bold",
   contentFont: "fancy",
 };
 
-import { defineEntry } from "@cass/define";
+export const langs = {
+  en: {
+    noQuery: "❌ Provide a search query.",
+    noResults: "❌ No TikTok videos found.",
+    invalidSelect: "❌ Invalid selection. Choose 1–6.",
+    downloadFail: "❌ Failed to download TikTok video.",
+  },
+};
+
+async function streamFromURL(url: string) {
+  const res = await axios({ url, responseType: "stream" });
+  return res.data;
+}
+
+function buildList(videos: TikTokVideo[]) {
+  const time = moment().tz("UTC").format("MMMM D, YYYY h:mm A");
+
+  const list = videos
+    .map(
+      (v, i) =>
+        ` • ${i + 1}. ${v.title.substring(0, 50)}\n   👤 @${
+          v.author.unique_id
+        }\n   ⏱ ${v.duration}s`
+    )
+    .join("\n\n");
+
+  return `${UNISpectra.charm} Temporal Coordinates
+ • 📅 ${time}
+${UNISpectra.standardLine}
+${UNISpectra.charm} Select a TikTok video
+${list}
+${UNISpectra.standardLine}
+${UNISpectra.charm} Reply with a number (1–6)
+${UNISpectra.charm} ChristusBot 🎵`;
+}
+
+async function downloadVideo(
+  videoUrl: string,
+  output: any
+) {
+  const filePath = path.join(
+    __dirname,
+    `tiktok_${Date.now()}.mp4`
+  );
+
+  const writer = fs.createWriteStream(filePath);
+  const res = await axios({
+    url: videoUrl,
+    responseType: "stream",
+  });
+
+  res.data.pipe(writer);
+
+  await new Promise<void>((resolve, reject) => {
+    writer.on("finish", resolve);
+    writer.on("error", reject);
+  });
+
+  await output.reply({
+    attachment: fs.createReadStream(filePath),
+  });
+
+  fs.unlinkSync(filePath);
+}
 
 export const entry = defineEntry(
-  async ({ input, output, prefix, commandName }) => {
-    const BASE_API_URL = "https://haji-mix-api.gleeze.com/api/tiktok";
-    const query = input.arguments.join(" ") || "";
+  async ({ input, output, args, langParser }) => {
+    const t = langParser.createGetLang(langs);
+    const query = args.join(" ").trim();
 
-    if (!query) {
-      await output.reply(
-        `***Guide***\n\nPlease provide a search query. **Example**: ${prefix}${commandName} Demon Slayer edits`
-      );
-      return;
-    }
+    if (!query) return output.reply(t("noQuery"));
 
     try {
-      await output.reply(
-        `🔎 | Searching TikTok for "${query}"...\n⏳ | Please **wait**...🎵`
+      const { data } = await axios.get(
+        TIKTOK_API + encodeURIComponent(query),
+        { timeout: 20000 }
       );
 
-      const apiUrl = `${BASE_API_URL}?search=${encodeURIComponent(
-        query
-      )}&stream=true`;
+      const videos: TikTokVideo[] = data.slice(0, 6);
+      if (!videos.length) return output.reply(t("noResults"));
 
-      await output.attach(
-        `Here's your TikTok video for "${query}"! 🎬✨`,
-        apiUrl
+      const thumbs = await Promise.all(
+        videos.map((v) => streamFromURL(v.cover))
       );
-    } catch (error) {
-      console.error("Entry error:", error.message);
-      await output.reply(`❌ | Error fetching TikTok video: ${error.message}`);
+
+      const msg = await output.reply({
+        body: buildList(videos),
+        attachment: thumbs,
+      });
+
+      input.setReply(msg.messageID, {
+        key: "tiktok",
+        id: input.senderID,
+        results: videos,
+      });
+    } catch (e) {
+      output.reply(t("noResults"));
     }
   }
 );
+
+export async function reply({
+  input,
+  output,
+  repObj,
+  detectID,
+  langParser,
+}: CommandContext & {
+  repObj: {
+    id: string;
+    results: TikTokVideo[];
+  };
+}) {
+  const t = langParser.createGetLang(langs);
+  if (input.senderID !== repObj.id) return;
+
+  const choice = parseInt(input.body);
+  if (
+    isNaN(choice) ||
+    choice < 1 ||
+    choice > repObj.results.length
+  ) {
+    return output.reply(t("invalidSelect"));
+  }
+
+  const selected = repObj.results[choice - 1];
+  input.delReply(String(detectID));
+
+  try {
+    await downloadVideo(selected.videoUrl, output);
+  } catch {
+    output.reply(t("downloadFail"));
+  }
+}
