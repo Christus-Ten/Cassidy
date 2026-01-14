@@ -5,9 +5,9 @@ import axios from "axios";
 
 export const meta = {
   name: "welcome",
-  author: "Chritus",
-  version: "4.2.0",
-  description: "Souhaite la bienvenue avec une histoire et l'heure de Côte d'Ivoire.",
+  author: "Christus",
+  version: "4.3.0",
+  description: "Accueil épique avec message de paix, respect et heure de Côte d'Ivoire.",
   supported: "^4.0.0",
   order: 10,
   type: "plugin",
@@ -34,38 +34,37 @@ export async function use(obj) {
 
   try {
     const threadInfo = await api.getThreadInfo(threadID);
-    const groupName = threadInfo.threadName || "ce groupe";
+    const groupName = threadInfo.threadName || "ce sanctuaire";
     const memberCount = threadInfo.participantIDs.length;
 
     for (const user of newUsers) {
       const userId = user.userFbId;
       const fullName = user.fullName;
 
-      // --- Heure de Côte d'Ivoire (Africa/Abidjan) ---
+      // --- Heure de Côte d'Ivoire ---
       const timeStr = new Date().toLocaleString("fr-FR", {
         timeZone: "Africa/Abidjan",
         hour: "2-digit",
         minute: "2-digit",
-        second: "2-digit",
         weekday: "long",
         year: "numeric",
         month: "long",
         day: "2-digit",
-        hour12: false,
       });
 
-      // --- Histoires narratives ---
+      // --- Histoires Épiques et Code d'Honneur ---
       const stories = [
-        `Le vent s'est levé sur "${groupName}" et les tambours ont résonné... Un nouveau destin vient de se lier au nôtre. ${fullName}, ton arrivée marque le début d'un nouveau chapitre. Tu es le ${memberCount}ème membre à franchir nos portes. Installe-toi, le voyage ne fait que commencer !`,
-        `Une étoile est apparue dans le ciel de notre communauté. On raconte que ${fullName} cherchait un lieu de partage et d'amitié, et ses pas l'ont mené ici, dans "${groupName}". Bienvenue, ${memberCount}ème voyageur ! Que ton séjour parmi nous soit légendaire.`,
-        `Les anciens du groupe "${groupName}" avaient prédit l'arrivée d'un ${memberCount}ème membre d'exception... Aujourd'hui, la prophétie s'est réalisée avec toi, ${fullName} ! Prends place autour du feu, partage tes idées et fais vibrer ce groupe !`,
+        `📜 **La Prophétie du Voyageur**\n\nLes tambours d'Abidjan ont résonné jusqu'aux confins du monde numérique pour annoncer ton arrivée, ${fullName}. On raconte que le groupe "${groupName}" attendait une âme capable d'apporter sa lumière à l'édifice. En devenant notre ${memberCount}ème membre, tu n'entres pas simplement dans une discussion, tu rejoins une lignée de guerriers de l'esprit. \n\nMais attention, voyageur : ici, notre force réside dans notre unité. Nous cultivons la Paix comme un trésor sacré et le Respect comme notre bouclier. Celui qui brise l'harmonie ou manque de considération envers ses frères et sœurs verra son chemin s'arrêter. Sois le bienvenu dans ce havre de paix !`,
+        
+        `⚔️ **Le Pacte de Fraternité**\n\nRegardez ! Le ciel de "${groupName}" s'est illuminé d'une lueur nouvelle. ${fullName} vient de franchir le grand portail, devenant le ${memberCount}ème pilier de ce royaume. Depuis des lunes, nous bâtissons un empire où chaque mot est une pierre de sagesse. \n\nSache, nouveau membre, que dans cette enceinte, la parole est une arme qui ne doit servir qu'à construire. Nous bannissons le mépris et l'arrogance. Ici, nous marchons main dans la main, dans le respect mutuel et la sérénité. Que ton aventure soit longue, et que ton cœur reste en paix avec tes semblables !`,
+        
+        `🌟 **L'Éveil du Sanctuaire**\n\nUne brise de changement souffle sur "${groupName}". ${fullName}, tu apparais enfin comme le ${memberCount}ème élu de notre communauté. Ton nom sera désormais gravé dans les archives de nos échanges. Mais avant de prendre place, prête l'oreille au code de notre terre : nous ne tolérons aucune ombre de discorde. \n\nLa paix est notre seule loi, et le respect d'autrui notre unique boussole. Que tu sois sage ou impétueux, n'oublie jamais que l'autre est ton reflet. Bienvenue dans cette quête épique où l'harmonie est la plus grande des victoires !`
       ];
       
       const randomStory = stories[Math.floor(Math.random() * stories.length)];
 
-      const storyBody = `📝 | **L'Arrivée de ${fullName}**\n\n${randomStory}\n\n${UNIRedux.standardLine}\n🌍 **Heure (Côte d'Ivoire) :** ${timeStr}`;
+      const storyBody = `✨ **BIENVENUE PARMI LES LÉGENDES** ✨\n\n${randomStory}\n\n${UNIRedux.standardLine}\n🇨🇮 **Abidjan, Côte d'Ivoire** | ${timeStr}`;
 
-      // Image via API externe
       const apiUrl = `https://xsaim8x-xxx-api.onrender.com/api/welcome?name=${encodeURIComponent(
         fullName
       )}&uid=${userId}&threadname=${encodeURIComponent(groupName)}&members=${memberCount}`;
@@ -85,7 +84,7 @@ export async function use(obj) {
           mentions: [{ tag: fullName, id: userId }],
         },
         {
-          title: "NOUVEAU MEMBRE",
+          title: "📜 DÉCRET D'ACCUEIL",
           titleFont: "none",
           contentFont: "none",
         }
